@@ -1,8 +1,13 @@
 package com.category.category;
 
+
 public class Category {
     private String idCategory;
     private String nameCategory;
+
+    public Category(){
+
+    }
 
     public Category(String idCategory, String nameCategory) {
         this.idCategory = idCategory;
