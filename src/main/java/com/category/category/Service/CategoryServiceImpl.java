@@ -2,13 +2,15 @@ package com.category.category.Service;
 
 import com.category.category.Category;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class CategoryServiceImpl implements CategoryService{
 
-    private ArrayList<Category> categories = new ArrayList<Category>();
+    private ArrayList<Category> categories = new ArrayList<>();
 
     @Override
     public Category create(Category category) {
@@ -45,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService{
     public Category update(Category category) {
         for(int i=0;i<categories.size();i++){
             if(categories.get(i).getIdCategory().compareTo(category.getIdCategory())==0){
-                categories.get(i).setIdCategory(category.getNameCategory());
+                categories.get(i).setNameCategory(category.getNameCategory());
                 return categories.get(i);
             }
         }
