@@ -2,16 +2,16 @@ package com.category.category;
 
 import com.category.category.Repository.CategoryRepository;
 import com.category.category.Service.CategoryService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,20 +26,23 @@ public class RepositoryTest {
         category.setNameCategory("nama");
 
         //Save or Update
-        categoryRepository.save(category);
+        categoryRepository.save(category).block();
+        Category result = categoryRepository.findById("1").block();
+        Assert.assertNotNull("Tidak null",result);
 
         //Select All
-        Page<Category> list = categoryRepository.findAll(PageRequest.of(0,10));
-        List<Category> page = list.getContent();
-        list.getTotalElements();
-        list.getTotalPages();
+        List<Category> list = categoryRepository.findAll().collectList().block();
 
-        Optional<Category> optional = categoryRepository.findById("1");
-        if(optional.isPresent()){
-            Category temp = optional.get();
+        Assert.assertNotNull("List ada isi",list);
+
+        boolean check = false;
+        if(categoryRepository.findById("1") != null){
+            check = true;
         }else{
-            //gak ada
+            check = false;
         }
+
+        Assert.assertTrue(check==true);
 
     }
 }

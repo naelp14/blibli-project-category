@@ -1,41 +1,25 @@
 package com.category.category;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.category.category.Validation.UniqueName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "category")
+import javax.validation.constraints.NotBlank;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "categories")
 public class Category {
     @Id
-    @Column(name = "id", nullable = false)
+    @NotBlank
     private String idCategory;
-    @Column(name = "name")
+
+    @NotBlank
+    @UniqueName
     private String nameCategory;
 
-    public Category(){
-
-    }
-
-    public Category(String idCategory, String nameCategory) {
-        this.idCategory = idCategory;
-        this.nameCategory = nameCategory;
-    }
-
-    public String getIdCategory() {
-        return idCategory;
-    }
-
-    public void setIdCategory(String idCategory) {
-        this.idCategory = idCategory;
-    }
-
-    public String getNameCategory() {
-        return nameCategory;
-    }
-
-    public void setNameCategory(String nameCategory) {
-        this.nameCategory = nameCategory;
-    }
 }

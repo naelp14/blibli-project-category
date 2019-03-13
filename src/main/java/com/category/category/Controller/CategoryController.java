@@ -3,8 +3,14 @@ package com.category.category.Controller;
 import com.category.category.Category;
 import com.category.category.Service.CategoryService;
 import com.category.category.Service.CategoryServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +19,25 @@ import java.util.List;
 public class CategoryController {
     ArrayList<Category> categories = new ArrayList<>();
     private CategoryService categoryService;
-    public CategoryController(CategoryService categoryService){
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @RequestMapping(
-            value="/categories",
+            value = "/categories",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-
-    public Category create(@RequestBody Category category){
+    public Mono<Category> create(@RequestBody Category category) throws Exception {
+        String json = objectMapper.writeValueAsString(category);
+        kafkaTemplate.send("categories", json);
         return categoryService.create(category);
     }
 
@@ -34,7 +47,7 @@ public class CategoryController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
 
-    public List<Category> findAll(){
+    public Flux<Category> findAll() throws Exception {
         return categoryService.findAll();
     }
 
@@ -44,7 +57,7 @@ public class CategoryController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
 
-    public Category findById(@PathVariable("idCategory")String id){
+    public Mono<Category> findById(@PathVariable("idCategory") String id) {
         return categoryService.findById(id);
     }
 
@@ -53,7 +66,7 @@ public class CategoryController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Category delete(@PathVariable("idCategory") String idCategory){
+    public Mono<Category> delete(@PathVariable("idCategory") String idCategory) {
         return categoryService.delete(idCategory);
     }
 
@@ -62,7 +75,9 @@ public class CategoryController {
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Category update(@RequestBody Category category){
+    public Mono<Category> update(@RequestBody Category category) {
         return categoryService.update(category);
     }
 }
+
+

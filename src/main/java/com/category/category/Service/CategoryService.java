@@ -1,13 +1,14 @@
 package com.category.category.Service;
 
 import com.category.category.Category;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 
 public interface CategoryService {
-    public Category create(Category category);
-    public Category findById(String id);
-    public Category delete(String id);
-    public Category update(Category category);
-    public List<Category> findAll();
+    Mono<Category> create(Category category);
+    Mono<Category> findById(String id);
+    Mono<Category> delete(String id);
+    Mono<Category> update(Category category);
+    Flux<Category> findAll();
 }
